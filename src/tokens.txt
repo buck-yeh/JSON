@@ -1,7 +1,7 @@
 #include        "$SCANNERGEN_DIR/RE_Suite.txt"
 %NAMEPREFIX     JSON
 
-float = ('.' dec_digit+ | dec_num {'.' dec_digit+}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
+float = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
 
 %CHAR_TYPE	    bux::C_LexUTF32
 

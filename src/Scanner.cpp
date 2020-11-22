@@ -85,7 +85,7 @@ GOTO_STATE5[6] ={
     {'0', 9},
     {':', std::numeric_limits<int8_t>::max()}},
 GOTO_STATE6[8] ={
-    {'.', 12},
+    {'.', 1},
     {'/', std::numeric_limits<int8_t>::max()},
     {'0', 1},
     {':', std::numeric_limits<int8_t>::max()},
@@ -94,7 +94,7 @@ GOTO_STATE6[8] ={
     {'e', 18},
     {'f', std::numeric_limits<int8_t>::max()}},
 GOTO_STATE7[8] ={
-    {'.', 12},
+    {'.', 1},
     {'/', std::numeric_limits<int8_t>::max()},
     {'0', 4},
     {':', std::numeric_limits<int8_t>::max()},

@@ -79,4 +79,5 @@ int main(int argc, char* argv[])
         if (const auto ret = doTheDance(in, indent))
             return ret;
     }
+    return 0;
 }

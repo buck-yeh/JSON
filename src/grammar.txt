@@ -29,7 +29,7 @@ int errors =0;
 #include        "$SCANNERGEN_DIR/RE_Suite.txt"
 %NAMEPREFIX     JSON
 
-float = ('.' dec_digit+ | dec_num {'.' dec_digit+}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
+float = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
 ]]
 %HEADERS_FOR_SCANNER_CPP    [[
 #include "JsonObjs.h"   // json::jint, json::jfloat
