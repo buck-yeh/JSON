@@ -1,2 +1,5 @@
 # JSON
-std::variant&lt;>-aliased JSON object with supports of encoding(dumping), decoding(parsing), and non-mutating operator/ as getter.
+`std::variant<>`-aliased JSON object with support functions:
+- Encoding: `json::dump()`, **operator <<**
+- Decoding: `json::parse()`, `json::parse_int()`, `json::parse_float()`
+- Non-mutating getters: `json::subvalue()`, **operator /**
