@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
-TOOL_ROOT=../../app
-$TOOL_ROOT/ParserGen/parsergen grammar.txt Parser tokens.txt
-if [ $? -ne 0 ]; then exit $?; fi
-$TOOL_ROOT/ScannerGen/scannergen Scanner tokens.txt
+if [[ -z "$TOOL_ROOT" ]]; then
+    TOOL_ROOT=../../parsergen
+fi
+if [[ -z "$PARSERGEN_DIR" ]]; then
+    PARSERGEN_DIR=$TOOL_ROOT/ParserGen
+fi
+if [[ -z "$SCANNERGEN_DIR" ]]; then
+    SCANNERGEN_DIR=$TOOL_ROOT/ScannerGen
+fi
+$PARSERGEN_DIR/parsergen grammar.txt Parser tokens.txt && \
+SCANNERGEN_DIR="$SCANNERGEN_DIR" $SCANNERGEN_DIR/scannergen Scanner tokens.txt
