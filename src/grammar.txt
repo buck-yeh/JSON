@@ -1,0 +1,142 @@
+class   json::C_Parser
+lexid   Spaces
+
+//
+//      Output Options
+//
+%CHAR_TYPE  [[bux::C_LexUTF32]]
+
+%HEADERS_FOR_CPP [[
+#include "JsonObjs.h"   // JSON object types
+#include <iostream>     // std::cerr
+]]
+
+%PRECLASSDECL    [[
+extern int errors;
+]]
+
+%SCOPED_CPP_HEAD [[
+int errors =0;
+]]
+
+%ON_ERROR [[
+    std::cerr <<'(' <<$pos.m_Line <<',' <<$pos.m_Col <<"): " <<$message <<'\n';
+    if (++errors > 10)
+        RUNTIME_ERROR("Too many errors !")
+]]
+
+%SCANNEROPTION  [[
+#include        "../../app/ScannerGen/RE_Suite.txt"
+%NAMEPREFIX     JSON
+
+float = ('.' dec_digit+ | dec_num {'.' dec_digit+}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
+]]
+%HEADERS_FOR_SCANNER_CPP    [[
+#include "JsonObjs.h"   // json::jint, json::jfloat
+#include <charconv>     // std::from_chars()
+]]
+%LOCALS_FOR_SCANNER_CPP     [[
+template<class T_LexCh>
+auto createFloat(const T_LexCh *c, size_t n)
+{
+    const auto s = bux::toString(c,0,n);
+    const auto send = s.data() + s.size();
+    jint i;
+    if (std::from_chars(s.data(), send, i).ptr == send)
+        return bux::C_ActionRet{TID_LEX_Num, bux::createLex(i)};
+#if 1
+    char *end;
+    jfloat f = strtod(s.c_str(), &end);
+    if (end != send)
+        RUNTIME_ERROR("Not a float: "+s)
+
+    return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
+#else
+    jfloat f;
+    auto t = std::from_chars(s.data(), send, f);
+    if (t.ptr == send)
+        return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
+
+    if (t.ptr == s.data())
+        RUNTIME_ERROR("Error: "<<make_error_code(t.ec))
+    else
+        RUNTIME_ERROR("Not a float: "+s)
+#endif
+}
+]]
+
+%EXTRA_TOKENS   [[spaces|c_str|float]]
+//%SHOW_UNDEFINED
+
+//
+//      Grammar with Reduction Code
+//
+//  1. Taken from https://www.json.org/
+//  2. The following nonterminals are shortcutted:
+//      - <element> is value
+//      - <object> is list of members
+//      - <array> is list of elements
+<@> ::= <value>   [[
+    $r = $1;
+]]
+
+<value> ::= { } [[
+    $r = bux::createLex<json::value>(json::object());
+]]
+<value> ::= { <members> }   [[
+    $r = bux::createLex<json::value>(bux::unlex<json::object>($2));
+]]
+<value> ::= [ ] [[
+    $r = bux::createLex<json::value>(json::array());
+]]
+<value> ::= [ <elements> ]  [[
+    $r = bux::createLex<json::value>(bux::unlex<json::array>($2));
+]]
+<value> ::= $String [[
+    $r = bux::createLex<json::value>(bux::unlex<std::string>($1));
+]]
+<value> ::= $Num    [[
+    $r = bux::createLex<json::value>(bux::unlex<jint>($1));
+]]
+<value> ::= - $Num  [[
+    auto &t = bux::unlex<jint>($2);
+    t = -t;
+    $r = bux::createLex<json::value>(t);
+]]
+<value> ::= $Float  [[
+    $r = bux::createLex<json::value>(bux::unlex<jfloat>($1));
+]]
+<value> ::= - $Float    [[
+    auto &t = bux::unlex<jfloat>($2);
+    t = -t;
+    $r = bux::createLex<json::value>(t);
+]]
+<value> ::= true    [[
+    $r = bux::createLex<json::value>(true);
+]]
+<value> ::= false   [[
+    $r = bux::createLex<json::value>(false);
+]]
+<value> ::= null    [[
+    $r = bux::createLex<json::value>();
+]]
+
+<members> ::= $String : <value> [[
+    json::object t;
+    t.try_emplace(bux::unlex<std::string>($1), bux::unlex<json::value>($3));
+    $r = bux::createLex(std::move(t));
+]]
+<members> ::= <members> , $String : <value> [[
+    bux::unlex<json::object>($1).try_emplace(bux::unlex<std::string>($3), bux::unlex<json::value>($5));
+    $r = $1;
+]]
+
+<elements> ::= <value> [[
+    json::array t;
+    t.emplace_back(bux::unlex<json::value>($1));
+    $r = bux::createLex(std::move(t));
+]]
+<elements> ::= <elements> , <value> [[
+    bux::unlex<json::array>($1).emplace_back(bux::unlex<json::value>($3));
+    $r = $1;
+]]

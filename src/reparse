@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+TOOL_ROOT=../../app
+$TOOL_ROOT/ParserGen/parsergen grammar.txt Parser tokens.txt
+if [ $? -ne 0 ]; then exit $?; fi
+$TOOL_ROOT/ScannerGen/scannergen Scanner tokens.txt

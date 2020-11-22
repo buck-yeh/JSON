@@ -1,0 +1,54 @@
+#include        "../../app/ScannerGen/RE_Suite.txt"
+%NAMEPREFIX     JSON
+
+float = ('.' dec_digit+ | dec_num {'.' dec_digit+}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
+
+%CHAR_TYPE	    bux::C_LexUTF32
+
+_literal_f_a_l_s_e_ 	= "false"	>>bux::createNothing<TID_KEYWORD_false,bux::C_LexUTF32> @+1
+_literal_n_u_l_l_ 	= "null"	>>bux::createNothing<TID_KEYWORD_null,bux::C_LexUTF32> @+1
+_literal_t_r_u_e_ 	= "true"	>>bux::createNothing<TID_KEYWORD_true,bux::C_LexUTF32> @+1
+_the_very_last_ = _literal_f_a_l_s_e_|_literal_n_u_l_l_|_literal_t_r_u_e_ | spaces|c_str|float
+
+%HEADERS_FOR_CPP     [[
+#include "ParserIdDef.h"
+
+// %HEADERS_FOR_SCANNER_CPP expanded BEGIN
+#include "JsonObjs.h"   // json::jint, json::jfloat
+#include <charconv>     // std::from_chars()
+// %HEADERS_FOR_SCANNER_CPP expanded END
+using namespace json;
+]]
+
+%LOCAL_ACTION_DEFS   [[
+
+// %LOCALS_FOR_SCANNER_CPP expanded BEGIN
+template<class T_LexCh>
+auto createFloat(const T_LexCh *c, size_t n)
+{
+    const auto s = bux::toString(c,0,n);
+    const auto send = s.data() + s.size();
+    jint i;
+    if (std::from_chars(s.data(), send, i).ptr == send)
+        return bux::C_ActionRet{TID_LEX_Num, bux::createLex(i)};
+#if 1
+    char *end;
+    jfloat f = strtod(s.c_str(), &end);
+    if (end != send)
+        RUNTIME_ERROR("Not a float: "+s)
+
+    return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
+#else
+    jfloat f;
+    auto t = std::from_chars(s.data(), send, f);
+    if (t.ptr == send)
+        return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
+
+    if (t.ptr == s.data())
+        RUNTIME_ERROR("Error: "<<make_error_code(t.ec))
+    else
+        RUNTIME_ERROR("Not a float: "+s)
+#endif
+}
+// %LOCALS_FOR_SCANNER_CPP expanded END
+]]
