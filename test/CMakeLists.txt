@@ -1,5 +1,5 @@
 #set(CMAKE_CXX_COMPILER "clang++")
-list(APPEND CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wconversion -std=c++2a")
+string(APPEND CMAKE_CXX_FLAGS "-Wall -Wextra -Wshadow -Wconversion -std=c++2a")
 #set(CMAKE_BUILD_TYPE Debug)
 
 add_executable(test_JSON test_json.cpp )
