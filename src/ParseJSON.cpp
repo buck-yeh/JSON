@@ -2,8 +2,9 @@
 #include "Parser.h"         // json::C_Parser, errors
 #include "ParserIdDef.h"    // TID_LEX_Spaces
 #include "Scanner.h"        // C_JSONScanner
+//--------------------------------------------------------------------
+#include "StrUtil.h"        // bux::C_IMemStream<>
 #include "XException.h"     // RUNTIME_ERROR()
-#include <sstream>          // std::istringstream
 
 namespace json {
 
@@ -28,9 +29,9 @@ value parse(std::istream &in)
     return bux::unlex<value>(parser.getFinalLex());;
 }
 
-std::optional<jint> parse_int(const std::string &s)
+std::optional<jint> parse_int(std::string_view s)
 {
-    std::istringstream in{s};
+    bux::C_IMemStream in{s.data(), s.size()};
     const auto v = json::parse(in);
     if (auto i = get_if<json::jint>(&v))
         return *i;
@@ -38,9 +39,9 @@ std::optional<jint> parse_int(const std::string &s)
     return {};
 }
 
-std::optional<jfloat> parse_float(const std::string &s)
+std::optional<jfloat> parse_float(std::string_view s)
 {
-    std::istringstream in{s};
+    bux::C_IMemStream in{s.data(), s.size()};
     const auto v = json::parse(in);
     if (auto f = get_if<json::jfloat>(&v))
         return *f;
