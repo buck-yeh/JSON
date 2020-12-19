@@ -35,7 +35,7 @@ auto createFloat(const T_LexCh *c, size_t n)
     char *end;
     jfloat f = strtod(s.c_str(), &end);
     if (end != send)
-        RUNTIME_ERROR("Not a float: "+s)
+        RUNTIME_ERROR("Not a float: {}", s);
 
     return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
 #else
@@ -45,9 +45,12 @@ auto createFloat(const T_LexCh *c, size_t n)
         return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
 
     if (t.ptr == s.data())
-        RUNTIME_ERROR("Error: "<<make_error_code(t.ec))
+    {
+        const auto ecode = make_error_code(t.ec);
+        RUNTIME_ERROR("Error: {}:{}", ecode.category().name(), ecode.value());
+    }
     else
-        RUNTIME_ERROR("Not a float: "+s)
+        RUNTIME_ERROR("Not a float: {}", s);
 #endif
 }
 // %LOCALS_FOR_SCANNER_CPP expanded END

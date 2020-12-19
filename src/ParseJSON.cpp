@@ -20,11 +20,11 @@ value parse(std::istream &in)
 
     // Check if parsing is ok
     if (errors)
-        RUNTIME_ERROR("Fail to parse!")
+        RUNTIME_ERROR("Fail to parse!");
 
     // Acceptance
     if (!parser.accepted())
-        RUNTIME_ERROR("Incomplete expression!")
+        RUNTIME_ERROR("Incomplete expression!");
 
     return bux::unlex<value>(parser.getFinalLex());;
 }
