@@ -3,8 +3,8 @@
 #include "ParserIdDef.h"    // TID_LEX_Spaces
 #include "Scanner.h"        // C_JSONScanner
 //--------------------------------------------------------------------
-#include "StrUtil.h"        // bux::C_IMemStream<>
-#include "XException.h"     // RUNTIME_ERROR()
+#include "bux/MemIn.h"      // bux::C_IMemStream<>
+#include "bux/XException.h" // RUNTIME_ERROR()
 
 namespace json {
 
@@ -31,7 +31,7 @@ value parse(std::istream &in)
 
 std::optional<jint> parse_int(std::string_view s)
 {
-    bux::C_IMemStream in{s.data(), s.size()};
+    bux::C_IMemStream in{s};
     const auto v = json::parse(in);
     if (auto i = get_if<json::jint>(&v))
         return *i;
@@ -41,7 +41,7 @@ std::optional<jint> parse_int(std::string_view s)
 
 std::optional<jfloat> parse_float(std::string_view s)
 {
-    bux::C_IMemStream in{s.data(), s.size()};
+    bux::C_IMemStream in{s};
     const auto v = json::parse(in);
     if (auto f = get_if<json::jfloat>(&v))
         return *f;

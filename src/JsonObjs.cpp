@@ -1,6 +1,7 @@
 #include "JsonObjs.h"
-#include "LexBase.h"    // bux::asciiLiteral()
-#include <ostream>      // std::ostream
+//--------------------------------------------------------------------
+#include "bux/LexBase.h"    // bux::asciiLiteral()
+#include <ostream>          // std::ostream
 
 namespace {
 
