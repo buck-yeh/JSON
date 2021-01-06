@@ -9,4 +9,4 @@ if [[ -z "$SCANNERGEN_DIR" ]]; then
     SCANNERGEN_DIR=$TOOL_ROOT/ScannerGen
 fi
 $PARSERGEN_DIR/parsergen grammar.txt Parser tokens.txt && \
-SCANNERGEN_DIR="$SCANNERGEN_DIR" $SCANNERGEN_DIR/scannergen Scanner tokens.txt
+$SCANNERGEN_DIR/scannergen Scanner tokens.txt -I "$SCANNERGEN_DIR"
