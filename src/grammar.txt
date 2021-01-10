@@ -4,8 +4,6 @@ lexid   Spaces
 //
 //      Output Options
 //
-%CHAR_TYPE  [[bux::C_LexUTF32]]
-
 %HEADERS_FOR_CPP [[
 #include "JsonObjs.h"   // JSON object types
 #include <iostream>     // std::cerr
@@ -26,7 +24,6 @@ int errors =0;
 ]]
 
 %SCANNEROPTION  [[
-#include        "RE_Suite.txt"
 %NAMEPREFIX     JSON
 
 float = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
@@ -53,7 +50,7 @@ auto createFloat(const T_LexCh *c, size_t n)
     return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
 #else
     jfloat f;
-    auto t = std::from_chars(s.data(), send, f);
+    auto t = std::from_chars(s.data(), send, f); // not supported by mainstream compilers yet
     if (t.ptr == send)
         return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
 

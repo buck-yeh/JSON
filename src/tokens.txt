@@ -1,13 +1,10 @@
-#include        "RE_Suite.txt"
 %NAMEPREFIX     JSON
 
 float = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
 
-%CHAR_TYPE	    bux::C_LexUTF32
-
-_literal_f_a_l_s_e_ 	= "false"	>>bux::createNothing<TID_KEYWORD_false,bux::C_LexUTF32> @+1
-_literal_n_u_l_l_ 	= "null"	>>bux::createNothing<TID_KEYWORD_null,bux::C_LexUTF32> @+1
-_literal_t_r_u_e_ 	= "true"	>>bux::createNothing<TID_KEYWORD_true,bux::C_LexUTF32> @+1
+_literal_f_a_l_s_e_ 	= "false"	>>bux::createNothing<TID_KEYWORD_false,CHAR_TYPE> @+1
+_literal_n_u_l_l_ 	= "null"	>>bux::createNothing<TID_KEYWORD_null,CHAR_TYPE> @+1
+_literal_t_r_u_e_ 	= "true"	>>bux::createNothing<TID_KEYWORD_true,CHAR_TYPE> @+1
 _the_very_last_ = _literal_f_a_l_s_e_|_literal_n_u_l_l_|_literal_t_r_u_e_ | spaces|c_str|float
 
 %HEADERS_FOR_CPP     [[
@@ -40,7 +37,7 @@ auto createFloat(const T_LexCh *c, size_t n)
     return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
 #else
     jfloat f;
-    auto t = std::from_chars(s.data(), send, f);
+    auto t = std::from_chars(s.data(), send, f); // not supported by mainstream compilers yet
     if (t.ptr == send)
         return bux::C_ActionRet{TID_LEX_Float, bux::createLex(f)};
 
