@@ -13,7 +13,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(FetchedBux)
 
-project(ParserSuite)
+project(JSON)
 
 add_subdirectory (src)
 add_subdirectory (test)

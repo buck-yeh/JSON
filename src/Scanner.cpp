@@ -211,7 +211,7 @@ GOTO_STATE29[2] ={
 
 // %LOCALS_FOR_SCANNER_CPP expanded BEGIN
 template<class T_LexCh>
-auto createFloat(const T_LexCh *c, size_t n)
+auto createFloatOrInt(const T_LexCh *c, size_t n)
 {
     const auto s = bux::toString(c,0,n);
     const auto send = s.data() + s.size();
@@ -246,16 +246,16 @@ auto createFloat(const T_LexCh *c, size_t n)
 
 constinit const C_JSONScanner::C_StateRec STATES[37] = {
     { GOTO_STATE2,	nullptr	},  // 0
-    { GOTO_STATE9,	createFloat<bux::C_LexUTF32>	},  // 1
-    { GOTO_STATE6,	createFloat<bux::C_LexUTF32>	},  // 2
+    { GOTO_STATE9,	createFloatOrInt<bux::C_LexUTF32>	},  // 1
+    { GOTO_STATE6,	createFloatOrInt<bux::C_LexUTF32>	},  // 2
     { GOTO_STATE1,	bux::createNothing<TID_LEX_Spaces,bux::C_LexUTF32>	},  // 3
-    { GOTO_STATE7,	createFloat<bux::C_LexUTF32>	},  // 4
+    { GOTO_STATE7,	createFloatOrInt<bux::C_LexUTF32>	},  // 4
     { nullptr,	bux::createEscapeString<TID_LEX_String,bux::C_LexUTF32, 1, 1>	},  // 5
     { nullptr,	bux::createNothing<TID_KEYWORD_false,bux::C_LexUTF32>	},  // 6
     { nullptr,	bux::createNothing<TID_KEYWORD_null,bux::C_LexUTF32>	},  // 7
     { nullptr,	bux::createNothing<TID_KEYWORD_true,bux::C_LexUTF32>	},  // 8
-    { GOTO_STATE10,	createFloat<bux::C_LexUTF32>	},  // 9
-    { GOTO_STATE7,	createFloat<bux::C_LexUTF32>	},  // 10
+    { GOTO_STATE10,	createFloatOrInt<bux::C_LexUTF32>	},  // 9
+    { GOTO_STATE7,	createFloatOrInt<bux::C_LexUTF32>	},  // 10
     { GOTO_STATE3,	nullptr	},  // 11
     { GOTO_STATE8,	nullptr	},  // 12
     { GOTO_STATE10,	nullptr	},  // 13

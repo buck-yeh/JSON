@@ -4,29 +4,19 @@ lexid   Spaces
 //
 //      Output Options
 //
+%CONTEXT [[std::ostream &]]
+
 %HEADERS_FOR_CPP [[
 #include "JsonObjs.h"   // JSON object types
-#include <iostream>     // std::cerr
 ]]
-
-%PRECLASSDECL    [[
-extern int errors;
-]]
-
-%SCOPED_CPP_HEAD [[
-int errors =0;
-]]
-
 %ON_ERROR [[
-    std::cerr <<'(' <<$pos.m_Line <<',' <<$pos.m_Col <<"): " <<$message <<'\n';
-    if (++errors > 10)
-        RUNTIME_ERROR("Too many errors !");
+    $c <<'(' <<$pos.m_Line <<',' <<$pos.m_Col <<"): " <<$message <<'\n';
 ]]
 
 %SCANNEROPTION  [[
 %NAMEPREFIX     JSON
 
-float = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
+float_or_int = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+} >>createFloatOrInt<CHAR_TYPE>
 ]]
 %HEADERS_FOR_SCANNER_CPP    [[
 #include "JsonObjs.h"   // json::jint, json::jfloat
@@ -34,7 +24,7 @@ float = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+
 ]]
 %LOCALS_FOR_SCANNER_CPP     [[
 template<class T_LexCh>
-auto createFloat(const T_LexCh *c, size_t n)
+auto createFloatOrInt(const T_LexCh *c, size_t n)
 {
     const auto s = bux::toString(c,0,n);
     const auto send = s.data() + s.size();
@@ -65,7 +55,7 @@ auto createFloat(const T_LexCh *c, size_t n)
 }
 ]]
 
-%EXTRA_TOKENS   [[spaces|c_str|float]]
+%EXTRA_TOKENS   [[spaces|c_str|float_or_int]]
 //%SHOW_UNDEFINED
 
 //

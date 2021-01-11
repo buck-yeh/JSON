@@ -1,11 +1,11 @@
 %NAMEPREFIX     JSON
 
-float = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+} >>createFloat<CHAR_TYPE>
+float_or_int = ('.' dec_digit+ | dec_num {'.' {dec_digit+}}) {[eE] {'+'|'-'} dec_digit+} >>createFloatOrInt<CHAR_TYPE>
 
 _literal_f_a_l_s_e_ 	= "false"	>>bux::createNothing<TID_KEYWORD_false,CHAR_TYPE> @+1
 _literal_n_u_l_l_ 	= "null"	>>bux::createNothing<TID_KEYWORD_null,CHAR_TYPE> @+1
 _literal_t_r_u_e_ 	= "true"	>>bux::createNothing<TID_KEYWORD_true,CHAR_TYPE> @+1
-_the_very_last_ = _literal_f_a_l_s_e_|_literal_n_u_l_l_|_literal_t_r_u_e_ | spaces|c_str|float
+_the_very_last_ = _literal_f_a_l_s_e_|_literal_n_u_l_l_|_literal_t_r_u_e_ | spaces|c_str|float_or_int
 
 %HEADERS_FOR_CPP     [[
 #include "ParserIdDef.h"
@@ -21,7 +21,7 @@ using namespace json;
 
 // %LOCALS_FOR_SCANNER_CPP expanded BEGIN
 template<class T_LexCh>
-auto createFloat(const T_LexCh *c, size_t n)
+auto createFloatOrInt(const T_LexCh *c, size_t n)
 {
     const auto s = bux::toString(c,0,n);
     const auto send = s.data() + s.size();

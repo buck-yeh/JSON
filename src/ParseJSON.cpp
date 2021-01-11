@@ -5,6 +5,7 @@
 //--------------------------------------------------------------------
 #include "bux/MemIn.h"      // bux::C_IMemStream<>
 #include "bux/XException.h" // RUNTIME_ERROR()
+#include <sstream>          // std::ostringstream
 
 namespace json {
 
@@ -13,14 +14,15 @@ namespace json {
 //
 value parse(std::istream &in)
 {
-    C_Parser        parser;
-    bux::C_Screener preparser(parser, [](auto token){ return token == TID_LEX_Spaces || token == '\n'; });
-    C_JSONScanner   scanner(preparser);
+    std::ostringstream  err_out;
+    C_Parser            parser{err_out};
+    bux::C_Screener     preparser(parser, [](auto token){ return token == TID_LEX_Spaces || token == '\n'; });
+    C_JSONScanner       scanner(preparser);
     bux::scanFile(">", in, scanner);
 
     // Check if parsing is ok
-    if (errors)
-        RUNTIME_ERROR("Fail to parse!");
+    if (const auto err_msgs = err_out.str(); !err_msgs.empty())
+        RUNTIME_ERROR("{}\nFail to parse!", err_msgs);
 
     // Acceptance
     if (!parser.accepted())

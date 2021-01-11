@@ -8,16 +8,20 @@
 
 namespace json {
 
-// %PRECLASSDECL expanded BEGIN
-extern int errors;
-// %PRECLASSDECL expanded END
-
 class C_Parser: public bux::LR1::C_Parser
 {
 public:
 
+    // Data
+    std::ostream &          m_context;
+
     // Ctor
-    C_Parser();
+    template<class...T_Args>
+    C_Parser(T_Args&&...args): bux::LR1::C_Parser(policy()), m_context(std::forward<T_Args>(args)...) {}
+
+private:
+
+    static const bux::LR1::I_ParserPolicy &policy();
 };
 
 } // namespace json

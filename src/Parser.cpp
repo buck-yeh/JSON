@@ -3,7 +3,6 @@
 
 // %HEADERS_FOR_CPP expanded BEGIN
 #include "JsonObjs.h"   // JSON object types
-#include <iostream>     // std::cerr
 // %HEADERS_FOR_CPP expanded END
 #include "Parser.h"
 #include "ParserIdDef.h"
@@ -547,12 +546,10 @@ void C_ParserPolicy::getReduceInfo(size_t id, C_ReduceInfo &info) const
     info.m_Reduce    = src.m_pAction;
 }
 
-void C_ParserPolicy::onError(bux::LR1::C_Parser &, const bux::C_SourcePos &pos, const std::string &message) const
+void C_ParserPolicy::onError(bux::LR1::C_Parser &_paRSeR_, const bux::C_SourcePos &pos, const std::string &message) const
 {
     // User-defined %ON_ERROR begins
-    std::cerr <<'(' <<pos.m_Line <<',' <<pos.m_Col <<"): " <<message <<'\n';
-    if (++errors > 10)
-        RUNTIME_ERROR("Too many errors !");
+    dynamic_cast<json::C_Parser&>(_paRSeR_).m_context <<'(' <<pos.m_Line <<',' <<pos.m_Col <<"): " <<message <<'\n';
     // User-defined %ON_ERROR ends
 }
 
@@ -560,10 +557,6 @@ void C_ParserPolicy::onError(bux::LR1::C_Parser &, const bux::C_SourcePos &pos, 
 
 namespace json {
 
-// %SCOPED_CPP_HEAD expanded BEGIN
-int errors =0;
-// %SCOPED_CPP_HEAD expanded END
-
-C_Parser::C_Parser(): bux::LR1::C_Parser(g_policy) {}
+const bux::LR1::I_ParserPolicy &json::C_Parser::policy() { return g_policy; }
 
 } // namespace json
