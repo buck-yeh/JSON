@@ -107,23 +107,15 @@ int findPrime4_0_9	(uint8_t key)	{ return findKey(alphaPrime4,9,key); }
 int findPrime5_0_2	(uint8_t key)	{ return findKey(alphaPrime5,2,key); }
 int findPrime6_0_3	(uint8_t key)	{ return findKey(alphaPrime6,3,key); }
 int findPrime6_0_5	(uint8_t key)	{ return findKey(alphaPrime6,5,key); }
-int findPrime6_1_2	(uint8_t key)	{ return findKey(alphaPrime6+1,2,key); }
 
 constinit const bux::C_KVPair<uint8_t,uint8_t>
 L2A_Table0[] ={
     {',',	ACTION_REDUCE_MIN + 15},
-    {'-',	ACTION_SHIFT},
-    {'[',	ACTION_SHIFT},
-    {'{',	ACTION_SHIFT},
     {'}',	ACTION_REDUCE_MIN + 15},
-    {ZIP_TOKEN(TID_LEX_Float),	ACTION_SHIFT},
-    {ZIP_TOKEN(TID_LEX_Num),	ACTION_SHIFT},
-    {ZIP_TOKEN(TID_LEX_String),	ACTION_SHIFT},
-    {ZIP_TOKEN(TID_KEYWORD_false),	ACTION_SHIFT},
-    {ZIP_TOKEN(TID_KEYWORD_null),	ACTION_SHIFT},
-    {ZIP_TOKEN(TID_KEYWORD_true),	ACTION_SHIFT}};
+    {ZIP_TOKEN(TID_LEX_Error),	ACTION_SHIFT},
+    {ZIP_TOKEN(TID_LEX_String),	ACTION_SHIFT}};
 
-constinit const bux::U_K2V<uint8_t,uint8_t> mapActionPtr[87] ={
+constinit const bux::U_K2V<uint8_t,uint8_t> mapActionPtr[86] ={
     findPrime4_0_9,	// 0
     findPrime2_4_2,	// 1
     findPrime2_0_10,	// 2
@@ -174,7 +166,7 @@ constinit const bux::U_K2V<uint8_t,uint8_t> mapActionPtr[87] ={
     isKey<':'>,	// 47
     findPrime3_0_10,	// 48
     findPrime1_0_2,	// 49
-    findPrime6_1_2,	// 50
+    L2A_Table0,	// 50
     isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 51
     findPrime0_0_2,	// 52
     findPrime0_0_2,	// 53
@@ -198,21 +190,20 @@ constinit const bux::U_K2V<uint8_t,uint8_t> mapActionPtr[87] ={
     findPrime1_0_2,	// 71
     findPrime1_0_2,	// 72
     findPrime1_0_2,	// 73
-    L2A_Table0,	// 74
-    findPrime1_0_2,	// 75
+    findPrime1_0_2,	// 74
+    isKey<':'>,	// 75
     isKey<':'>,	// 76
-    isKey<':'>,	// 77
+    findPrime1_0_2,	// 77
     findPrime1_0_2,	// 78
     findPrime1_0_2,	// 79
     findPrime1_0_2,	// 80
-    findPrime1_0_2,	// 81
-    findPrime0_0_2,	// 82
+    findPrime0_0_2,	// 81
+    findPrime1_0_2,	// 82
     findPrime1_0_2,	// 83
     findPrime1_0_2,	// 84
-    findPrime1_0_2,	// 85
-    findPrime1_0_2};	// 86
+    findPrime1_0_2};	// 85
 
-constinit const int8_t mapActionSizeEx[87] ={
+constinit const int8_t mapActionSizeEx[86] ={
     ACTION_SHIFT,	// 0
     ACTION_SHIFT,	// 1
     ACTION_SHIFT,	// 2
@@ -263,7 +254,7 @@ constinit const int8_t mapActionSizeEx[87] ={
     ACTION_SHIFT,	// 47
     ACTION_SHIFT,	// 48
     ACTION_REDUCE_MIN + 18,	// 49
-    ACTION_SHIFT,	// 50
+    -4,	// 50
     ACTION_REDUCE_MIN + 2,	// 51
     ACTION_REDUCE_MIN + 4,	// 52
     ACTION_REDUCE_MIN + 2,	// 53
@@ -287,19 +278,18 @@ constinit const int8_t mapActionSizeEx[87] ={
     ACTION_REDUCE_MIN + 12,	// 71
     ACTION_REDUCE_MIN + 10,	// 72
     ACTION_REDUCE_MIN + 16,	// 73
-    -11,	// 74
-    ACTION_REDUCE_MIN + 14,	// 75
-    ACTION_REDUCE_MIN + 4,	// 76
-    ACTION_REDUCE_MIN + 2,	// 77
-    ACTION_REDUCE_MIN + 19,	// 78
-    ACTION_REDUCE_MIN + 9,	// 79
-    ACTION_REDUCE_MIN + 7,	// 80
-    ACTION_REDUCE_MIN + 3,	// 81
-    ACTION_SHIFT,	// 82
-    ACTION_REDUCE_MIN + 1,	// 83
-    ACTION_SHIFT,	// 84
-    ACTION_REDUCE_MIN + 4,	// 85
-    ACTION_REDUCE_MIN + 2};	// 86
+    ACTION_REDUCE_MIN + 14,	// 74
+    ACTION_REDUCE_MIN + 4,	// 75
+    ACTION_REDUCE_MIN + 2,	// 76
+    ACTION_REDUCE_MIN + 19,	// 77
+    ACTION_REDUCE_MIN + 9,	// 78
+    ACTION_REDUCE_MIN + 7,	// 79
+    ACTION_REDUCE_MIN + 3,	// 80
+    ACTION_SHIFT,	// 81
+    ACTION_REDUCE_MIN + 1,	// 82
+    ACTION_SHIFT,	// 83
+    ACTION_REDUCE_MIN + 4,	// 84
+    ACTION_REDUCE_MIN + 2};	// 85
 
 constinit const bux::C_KVPair<uint8_t,uint8_t>
 L2S_Table0[] ={
@@ -307,19 +297,19 @@ L2S_Table0[] ={
     {']',	52}},
 L2S_Table1[] ={
     {',',	36},
-    {']',	76}},
+    {']',	75}},
 L2S_Table2[] ={
     {',',	36},
-    {']',	85}},
+    {']',	84}},
 L2S_Table3[] ={
     {',',	50},
     {'}',	53}},
 L2S_Table4[] ={
     {',',	50},
-    {'}',	77}},
+    {'}',	76}},
 L2S_Table5[] ={
     {',',	50},
-    {'}',	86}},
+    {'}',	85}},
 L2S_Table6[] ={
     {'-',	13},
     {'[',	14},
@@ -349,7 +339,7 @@ L2S_Table7[] ={
 L2S_Table8[] ={
     {'-',	13},
     {'[',	14},
-    {']',	81},
+    {']',	80},
     {'{',	16},
     {ZIP_TOKEN(TID_LEX_Float),	17},
     {ZIP_TOKEN(TID_LEX_Num),	18},
@@ -357,7 +347,7 @@ L2S_Table8[] ={
     {ZIP_TOKEN(TID_KEYWORD_false),	20},
     {ZIP_TOKEN(TID_KEYWORD_null),	21},
     {ZIP_TOKEN(TID_KEYWORD_true),	22},
-    {ZIP_TOKEN(NID_elements),	82},
+    {ZIP_TOKEN(NID_elements),	81},
     {ZIP_TOKEN(NID_value),	24}},
 L2S_Table9[] ={
     {'-',	13},
@@ -381,7 +371,7 @@ L2S_Table10[] ={
     {ZIP_TOKEN(TID_KEYWORD_false),	70},
     {ZIP_TOKEN(TID_KEYWORD_null),	71},
     {ZIP_TOKEN(TID_KEYWORD_true),	72},
-    {ZIP_TOKEN(NID_value),	78}},
+    {ZIP_TOKEN(NID_value),	77}},
 L2S_Table11[] ={
     {'}',	34},
     {ZIP_TOKEN(TID_LEX_Error),	26},
@@ -395,21 +385,21 @@ L2S_Table12[] ={
     {ZIP_TOKEN(NID_member),	28},
     {ZIP_TOKEN(NID_members),	61}},
 L2S_Table13[] ={
-    {'}',	83},
+    {'}',	82},
     {ZIP_TOKEN(TID_LEX_Error),	26},
     {ZIP_TOKEN(TID_LEX_String),	27},
     {ZIP_TOKEN(NID_member),	28},
-    {ZIP_TOKEN(NID_members),	84}},
+    {ZIP_TOKEN(NID_members),	83}},
 L2S_Table14[] ={
-    {ZIP_TOKEN(TID_LEX_Error),	74},
+    {ZIP_TOKEN(TID_LEX_Error),	26},
     {ZIP_TOKEN(TID_LEX_String),	27},
-    {ZIP_TOKEN(NID_member),	75}};
+    {ZIP_TOKEN(NID_member),	74}};
 
 constinit const struct C_MapGoto {
     bux::U_K2V<uint8_t,uint8_t> m_k2v;
     uint8_t	m_curState;
     int8_t	m_nextStateEx;
-}   mapGoto[29] ={
+}   mapGoto[28] ={
     {findPrime4_0_10,	0,	1},
     {findPrime2_4_2,	1,	11},
     {findPrime2_0_12,	2,	13},
@@ -433,12 +423,11 @@ constinit const struct C_MapGoto {
     {L2S_Table1,	59,	-2},
     {L2S_Table4,	61,	-2},
     {L2S_Table10,	62,	-10},
-    {findPrime2_4_2,	63,	79},
+    {findPrime2_4_2,	63,	78},
     {L2S_Table8,	64,	-12},
     {L2S_Table13,	65,	-5},
-    {findPrime4_0_10,	74,	38},
-    {L2S_Table2,	82,	-2},
-    {L2S_Table5,	84,	-2}};
+    {L2S_Table2,	81,	-2},
+    {L2S_Table5,	83,	-2}};
 
 void _reduce_0(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
 //  <@> ::= <value>
@@ -540,7 +529,7 @@ void _reduce_14(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT
 }
 
 void _reduce_15(bux::LR1::C_Parser &_paRSeR_, const F_GetProduced &_geT_, C_RetLval _reT_)
-//  <members> ::= <members> , $Error
+//  <members> ::= <members> ,
 //  <elements> ::= <elements> , $Error
 {
     dynamic_cast<json::C_Parser&>(_paRSeR_).m_context.log(LL_WARNING, _geT_(1), "Superfluous ','");
@@ -610,7 +599,7 @@ struct C_ProductionInfo
 {_reduce_12,	ZIP_TOKEN(NID_value), 1},	// 12: <value> ::= null
 {_reduce_13,	ZIP_TOKEN(NID_members), 1},	// 13: <members> ::= <member>
 {_reduce_14,	ZIP_TOKEN(NID_members), 3},	// 14: <members> ::= <members> , <member>
-{_reduce_15,	ZIP_TOKEN(NID_members), 3},	// 15: <members> ::= <members> , $Error
+{_reduce_15,	ZIP_TOKEN(NID_members), 2},	// 15: <members> ::= <members> ,
 {_reduce_16,	ZIP_TOKEN(NID_member), 3},	// 16: <member> ::= $String : <value>
 {_reduce_17,	ZIP_TOKEN(NID_member), 3},	// 17: <member> ::= $String : $Error
 {_reduce_18,	ZIP_TOKEN(NID_member), 2},	// 18: <member> ::= $String $Error
@@ -698,7 +687,7 @@ bux::T_StateID C_ParserPolicy::nextState(bux::T_StateID state, bux::T_LexID inpu
     else if (input >= ENCODED_TOKEN_LB)
         LOGIC_ERROR("Invalid input: state={} input={}", (int)state, printToken(input));
 
-    auto end = mapGoto + 29;
+    auto end = mapGoto + 28;
     auto found = std::lower_bound(mapGoto, end, state, [](const C_MapGoto &i, bux::T_StateID state_) {
         return i.m_curState < state_;
     });

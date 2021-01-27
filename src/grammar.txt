@@ -123,7 +123,7 @@ auto createFloatOrInt(const T_LexCh *c, size_t n)
     bux::unlex<json::object>($1).try_emplace(std::move(src.first), std::move(src.second));
     $r = $1;
 ]]
-<members> ::= <members> , $Error    [[
+<members> ::= <members> ,           [[
     $c.log(LL_WARNING, $2, "Superfluous ','");
     $r = $1;
 ]]
