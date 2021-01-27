@@ -4,13 +4,14 @@ lexid   Spaces
 //
 //      Output Options
 //
-%CONTEXT [[std::ostream &]]
+%ERROR_TOKEN
+%CONTEXT    [[bux::C_ParserOStreamCount]]
+%ON_ERROR   [[
+    $c.log(LL_ERROR, $pos, $message);
+]]
 
 %HEADERS_FOR_CPP [[
 #include "JsonObjs.h"   // JSON object types
-]]
-%ON_ERROR [[
-    $c <<'(' <<$pos.m_Line <<',' <<$pos.m_Col <<"): " <<$message <<'\n';
 ]]
 
 %SCANNEROPTION  [[
@@ -70,58 +71,80 @@ auto createFloatOrInt(const T_LexCh *c, size_t n)
     $r = $1;
 ]]
 
-<value> ::= { } [[
+<value> ::= { }             [[
     $r = bux::createLex<json::value>(json::object());
 ]]
 <value> ::= { <members> }   [[
     $r = bux::createLex<json::value>(bux::unlex<json::object>($2));
 ]]
-<value> ::= [ ] [[
+<value> ::= [ ]             [[
     $r = bux::createLex<json::value>(json::array());
 ]]
 <value> ::= [ <elements> ]  [[
     $r = bux::createLex<json::value>(bux::unlex<json::array>($2));
 ]]
-<value> ::= $String [[
+<value> ::= $String         [[
     $r = bux::createLex<json::value>(bux::unlex<std::string>($1));
 ]]
-<value> ::= $Num    [[
+<value> ::= $Num            [[
     $r = bux::createLex<json::value>(bux::unlex<jint>($1));
 ]]
-<value> ::= - $Num  [[
+<value> ::= - $Num          [[
     auto &t = bux::unlex<jint>($2);
     t = -t;
     $r = bux::createLex<json::value>(t);
 ]]
-<value> ::= $Float  [[
+<value> ::= $Float          [[
     $r = bux::createLex<json::value>(bux::unlex<jfloat>($1));
 ]]
-<value> ::= - $Float    [[
+<value> ::= - $Float        [[
     auto &t = bux::unlex<jfloat>($2);
     t = -t;
     $r = bux::createLex<json::value>(t);
 ]]
-<value> ::= true    [[
+<value> ::= true            [[
     $r = bux::createLex<json::value>(true);
 ]]
-<value> ::= false   [[
+<value> ::= false           [[
     $r = bux::createLex<json::value>(false);
 ]]
-<value> ::= null    [[
+<value> ::= null            [[
     $r = bux::createLex<json::value>();
 ]]
 
-<members> ::= $String : <value> [[
+<members> ::= <member>              [[
     json::object t;
-    t.try_emplace(bux::unlex<std::string>($1), bux::unlex<json::value>($3));
+    auto &src = bux::unlex<std::pair<std::string,json::value>>($1);
+    t.try_emplace(std::move(src.first), std::move(src.second));
     $r = bux::createLex(std::move(t));
 ]]
-<members> ::= <members> , $String : <value> [[
-    bux::unlex<json::object>($1).try_emplace(bux::unlex<std::string>($3), bux::unlex<json::value>($5));
+<members> ::= <members> , <member>  [[
+    auto &src = bux::unlex<std::pair<std::string,json::value>>($3);
+    bux::unlex<json::object>($1).try_emplace(std::move(src.first), std::move(src.second));
+    $r = $1;
+]]
+<members> ::= <members> , $Error    [[
+    $c.log(LL_WARNING, $2, "Superfluous ','");
     $r = $1;
 ]]
 
-<elements> ::= <value> [[
+<member> ::= $String : <value>          [[
+    $r = bux::createLex(std::pair{bux::unlex<std::string>($1), bux::unlex<json::value>($3)});
+]]
+<member> ::= $String : $Error           [[
+    $p.onError($3, "Expect <value>");
+    $r = bux::createLex(std::pair{bux::unlex<std::string>($1), json::value{}});
+]]
+<member> ::= $String $Error             [[
+    $p.onError($2, "Expect ':'");
+    $r = bux::createLex(std::pair{bux::unlex<std::string>($1), json::value{}});
+]]
+<member> ::= $Error <value> : <value>   [[
+    $p.onError($1, "Only string key allowed");
+    $r = bux::createLex(std::pair{std::string{"NonStrKey__"}, bux::unlex<json::value>($4)});
+]]
+
+<elements> ::= <value>              [[
     json::array t;
     t.emplace_back(bux::unlex<json::value>($1));
     $r = bux::createLex(std::move(t));
@@ -130,3 +153,15 @@ auto createFloatOrInt(const T_LexCh *c, size_t n)
     bux::unlex<json::array>($1).emplace_back(bux::unlex<json::value>($3));
     $r = $1;
 ]]
+<elements> ::= <elements> , $Error  [[
+    $c.log(LL_WARNING, $2, "Superfluous ','");
+    $r = $1;
+]]
+
+//%ENABLE_TUPLE_
+#ifdef ENABLE_TUPLE_
+<value> ::= ( <elements> ) [[
+    $c.log(LL_INFO, $1, "Load tuple as array");
+    $r = bux::createLex<json::value>(bux::unlex<json::array>($2));
+]]
+#endif

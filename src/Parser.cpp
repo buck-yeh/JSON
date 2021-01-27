@@ -20,8 +20,9 @@ using namespace json;
 enum
 {
     NID_elements = TID_UB_+0,	// <elements>
-    NID_members  = TID_UB_+1,	// <members>
-    NID_value    = TID_UB_+2,	// <value>
+    NID_member   = TID_UB_+1,	// <member>
+    NID_members  = TID_UB_+2,	// <members>
+    NID_value    = TID_UB_+3,	// <value>
     TOKENGEN_UB,
     //---------------------------------------------------
     ENCODED_TOKEN_LB	 = 126
@@ -48,7 +49,19 @@ alphaPrime2[12] = {
     ZIP_TOKEN(TID_KEYWORD_true),
     ZIP_TOKEN(NID_elements),
     ZIP_TOKEN(NID_value)},
-alphaPrime3[10] = {
+alphaPrime3[11] = {
+    '-',
+    '[',
+    '{',
+    ZIP_TOKEN(TID_LEX_Error),
+    ZIP_TOKEN(TID_LEX_Float),
+    ZIP_TOKEN(TID_LEX_Num),
+    ZIP_TOKEN(TID_LEX_String),
+    ZIP_TOKEN(TID_KEYWORD_false),
+    ZIP_TOKEN(TID_KEYWORD_null),
+    ZIP_TOKEN(TID_KEYWORD_true),
+    ZIP_TOKEN(NID_value)},
+alphaPrime4[10] = {
     '-',
     '[',
     '{',
@@ -59,9 +72,14 @@ alphaPrime3[10] = {
     ZIP_TOKEN(TID_KEYWORD_null),
     ZIP_TOKEN(TID_KEYWORD_true),
     ZIP_TOKEN(NID_value)},
-alphaPrime4[3] = {
+alphaPrime5[2] = {
+    ':',
+    ZIP_TOKEN(TID_LEX_Error)},
+alphaPrime6[5] = {
     '}',
+    ZIP_TOKEN(TID_LEX_Error),
     ZIP_TOKEN(TID_LEX_String),
+    ZIP_TOKEN(NID_member),
     ZIP_TOKEN(NID_members)};
 
 template<uint8_t KEY> int isKey(uint8_t key)
@@ -83,15 +101,33 @@ int findPrime2_0_10	(uint8_t key)	{ return findKey(alphaPrime2,10,key); }
 int findPrime2_0_12	(uint8_t key)	{ return findKey(alphaPrime2,12,key); }
 int findPrime2_4_2	(uint8_t key)	{ return findKey(alphaPrime2+4,2,key); }
 int findPrime3_0_10	(uint8_t key)	{ return findKey(alphaPrime3,10,key); }
-int findPrime3_0_9	(uint8_t key)	{ return findKey(alphaPrime3,9,key); }
-int findPrime4_0_2	(uint8_t key)	{ return findKey(alphaPrime4,2,key); }
-int findPrime4_0_3	(uint8_t key)	{ return findKey(alphaPrime4,3,key); }
+int findPrime3_0_11	(uint8_t key)	{ return findKey(alphaPrime3,11,key); }
+int findPrime4_0_10	(uint8_t key)	{ return findKey(alphaPrime4,10,key); }
+int findPrime4_0_9	(uint8_t key)	{ return findKey(alphaPrime4,9,key); }
+int findPrime5_0_2	(uint8_t key)	{ return findKey(alphaPrime5,2,key); }
+int findPrime6_0_3	(uint8_t key)	{ return findKey(alphaPrime6,3,key); }
+int findPrime6_0_5	(uint8_t key)	{ return findKey(alphaPrime6,5,key); }
+int findPrime6_1_2	(uint8_t key)	{ return findKey(alphaPrime6+1,2,key); }
 
-constinit const bux::U_K2V<uint8_t,uint8_t> mapActionPtr[63] ={
-    findPrime3_0_9,	// 0
+constinit const bux::C_KVPair<uint8_t,uint8_t>
+L2A_Table0[] ={
+    {',',	ACTION_REDUCE_MIN + 15},
+    {'-',	ACTION_SHIFT},
+    {'[',	ACTION_SHIFT},
+    {'{',	ACTION_SHIFT},
+    {'}',	ACTION_REDUCE_MIN + 15},
+    {ZIP_TOKEN(TID_LEX_Float),	ACTION_SHIFT},
+    {ZIP_TOKEN(TID_LEX_Num),	ACTION_SHIFT},
+    {ZIP_TOKEN(TID_LEX_String),	ACTION_SHIFT},
+    {ZIP_TOKEN(TID_KEYWORD_false),	ACTION_SHIFT},
+    {ZIP_TOKEN(TID_KEYWORD_null),	ACTION_SHIFT},
+    {ZIP_TOKEN(TID_KEYWORD_true),	ACTION_SHIFT}};
+
+constinit const bux::U_K2V<uint8_t,uint8_t> mapActionPtr[87] ={
+    findPrime4_0_9,	// 0
     findPrime2_4_2,	// 1
     findPrime2_0_10,	// 2
-    findPrime4_0_2,	// 3
+    findPrime6_0_3,	// 3
     isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 4
     isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 5
     isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 6
@@ -104,7 +140,7 @@ constinit const bux::U_K2V<uint8_t,uint8_t> mapActionPtr[63] ={
     findPrime2_4_2,	// 13
     findPrime2_0_10,	// 14
     isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 15
-    findPrime4_0_2,	// 16
+    findPrime6_0_3,	// 16
     findPrime0_0_2,	// 17
     findPrime0_0_2,	// 18
     findPrime0_0_2,	// 19
@@ -114,45 +150,69 @@ constinit const bux::U_K2V<uint8_t,uint8_t> mapActionPtr[63] ={
     findPrime0_0_2,	// 23
     findPrime0_0_2,	// 24
     isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 25
-    isKey<':'>,	// 26
-    findPrime1_0_2,	// 27
-    findPrime0_0_2,	// 28
-    findPrime0_0_2,	// 29
+    findPrime4_0_9,	// 26
+    findPrime5_0_2,	// 27
+    findPrime1_0_2,	// 28
+    findPrime1_0_2,	// 29
     findPrime0_0_2,	// 30
     findPrime0_0_2,	// 31
     findPrime0_0_2,	// 32
-    findPrime1_0_2,	// 33
-    findPrime3_0_9,	// 34
-    isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 35
-    findPrime3_0_9,	// 36
-    isKey<ZIP_TOKEN(TID_LEX_String)>,	// 37
-    isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 38
-    findPrime0_0_2,	// 39
-    findPrime0_0_2,	// 40
-    findPrime0_0_2,	// 41
-    findPrime2_4_2,	// 42
-    findPrime2_0_10,	// 43
-    findPrime4_0_2,	// 44
-    findPrime1_0_2,	// 45
-    findPrime1_0_2,	// 46
-    findPrime1_0_2,	// 47
-    findPrime1_0_2,	// 48
+    findPrime0_0_2,	// 33
+    findPrime0_0_2,	// 34
+    findPrime1_0_2,	// 35
+    findPrime3_0_10,	// 36
+    isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 37
+    findPrime2_4_2,	// 38
+    findPrime2_0_10,	// 39
+    findPrime6_0_3,	// 40
+    isKey<':'>,	// 41
+    isKey<':'>,	// 42
+    isKey<':'>,	// 43
+    isKey<':'>,	// 44
+    isKey<':'>,	// 45
+    isKey<':'>,	// 46
+    isKey<':'>,	// 47
+    findPrime3_0_10,	// 48
     findPrime1_0_2,	// 49
-    findPrime1_0_2,	// 50
-    findPrime1_0_2,	// 51
-    isKey<':'>,	// 52
-    findPrime1_0_2,	// 53
-    findPrime1_0_2,	// 54
-    findPrime1_0_2,	// 55
-    findPrime0_0_2,	// 56
-    findPrime1_0_2,	// 57
-    findPrime1_0_2,	// 58
-    findPrime3_0_9,	// 59
-    findPrime1_0_2,	// 60
+    findPrime6_1_2,	// 50
+    isKey<ZIP_TOKEN(bux::TID_EOF)>,	// 51
+    findPrime0_0_2,	// 52
+    findPrime0_0_2,	// 53
+    findPrime0_0_2,	// 54
+    findPrime0_0_2,	// 55
+    isKey<':'>,	// 56
+    isKey<':'>,	// 57
+    isKey<':'>,	// 58
+    findPrime0_0_2,	// 59
+    isKey<':'>,	// 60
     findPrime1_0_2,	// 61
-    findPrime1_0_2};	// 62
+    findPrime4_0_9,	// 62
+    findPrime2_4_2,	// 63
+    findPrime2_0_10,	// 64
+    findPrime6_0_3,	// 65
+    findPrime1_0_2,	// 66
+    findPrime1_0_2,	// 67
+    findPrime1_0_2,	// 68
+    findPrime1_0_2,	// 69
+    findPrime1_0_2,	// 70
+    findPrime1_0_2,	// 71
+    findPrime1_0_2,	// 72
+    findPrime1_0_2,	// 73
+    L2A_Table0,	// 74
+    findPrime1_0_2,	// 75
+    isKey<':'>,	// 76
+    isKey<':'>,	// 77
+    findPrime1_0_2,	// 78
+    findPrime1_0_2,	// 79
+    findPrime1_0_2,	// 80
+    findPrime1_0_2,	// 81
+    findPrime0_0_2,	// 82
+    findPrime1_0_2,	// 83
+    findPrime1_0_2,	// 84
+    findPrime1_0_2,	// 85
+    findPrime1_0_2};	// 86
 
-constinit const int8_t mapActionSizeEx[63] ={
+constinit const int8_t mapActionSizeEx[87] ={
     ACTION_SHIFT,	// 0
     ACTION_SHIFT,	// 1
     ACTION_SHIFT,	// 2
@@ -177,88 +237,93 @@ constinit const int8_t mapActionSizeEx[63] ={
     ACTION_REDUCE_MIN + 12,	// 21
     ACTION_REDUCE_MIN + 10,	// 22
     ACTION_SHIFT,	// 23
-    ACTION_REDUCE_MIN + 15,	// 24
+    ACTION_REDUCE_MIN + 20,	// 24
     ACTION_REDUCE_MIN + 1,	// 25
     ACTION_SHIFT,	// 26
     ACTION_SHIFT,	// 27
-    ACTION_REDUCE_MIN + 9,	// 28
-    ACTION_REDUCE_MIN + 7,	// 29
-    ACTION_REDUCE_MIN + 3,	// 30
-    ACTION_SHIFT,	// 31
-    ACTION_REDUCE_MIN + 1,	// 32
+    ACTION_REDUCE_MIN + 13,	// 28
+    ACTION_SHIFT,	// 29
+    ACTION_REDUCE_MIN + 9,	// 30
+    ACTION_REDUCE_MIN + 7,	// 31
+    ACTION_REDUCE_MIN + 3,	// 32
     ACTION_SHIFT,	// 33
-    ACTION_SHIFT,	// 34
-    ACTION_REDUCE_MIN + 4,	// 35
+    ACTION_REDUCE_MIN + 1,	// 34
+    ACTION_SHIFT,	// 35
     ACTION_SHIFT,	// 36
-    ACTION_SHIFT,	// 37
-    ACTION_REDUCE_MIN + 2,	// 38
-    ACTION_REDUCE_MIN + 4,	// 39
-    ACTION_REDUCE_MIN + 2,	// 40
-    ACTION_REDUCE_MIN + 16,	// 41
-    ACTION_SHIFT,	// 42
-    ACTION_SHIFT,	// 43
-    ACTION_SHIFT,	// 44
-    ACTION_REDUCE_MIN + 8,	// 45
-    ACTION_REDUCE_MIN + 6,	// 46
-    ACTION_REDUCE_MIN + 5,	// 47
-    ACTION_REDUCE_MIN + 11,	// 48
-    ACTION_REDUCE_MIN + 12,	// 49
-    ACTION_REDUCE_MIN + 10,	// 50
-    ACTION_REDUCE_MIN + 13,	// 51
-    ACTION_SHIFT,	// 52
-    ACTION_REDUCE_MIN + 9,	// 53
-    ACTION_REDUCE_MIN + 7,	// 54
-    ACTION_REDUCE_MIN + 3,	// 55
-    ACTION_SHIFT,	// 56
-    ACTION_REDUCE_MIN + 1,	// 57
-    ACTION_SHIFT,	// 58
+    ACTION_REDUCE_MIN + 4,	// 37
+    ACTION_SHIFT,	// 38
+    ACTION_SHIFT,	// 39
+    ACTION_SHIFT,	// 40
+    ACTION_REDUCE_MIN + 8,	// 41
+    ACTION_REDUCE_MIN + 6,	// 42
+    ACTION_REDUCE_MIN + 5,	// 43
+    ACTION_REDUCE_MIN + 11,	// 44
+    ACTION_REDUCE_MIN + 12,	// 45
+    ACTION_REDUCE_MIN + 10,	// 46
+    ACTION_SHIFT,	// 47
+    ACTION_SHIFT,	// 48
+    ACTION_REDUCE_MIN + 18,	// 49
+    ACTION_SHIFT,	// 50
+    ACTION_REDUCE_MIN + 2,	// 51
+    ACTION_REDUCE_MIN + 4,	// 52
+    ACTION_REDUCE_MIN + 2,	// 53
+    ACTION_REDUCE_MIN + 22,	// 54
+    ACTION_REDUCE_MIN + 21,	// 55
+    ACTION_REDUCE_MIN + 9,	// 56
+    ACTION_REDUCE_MIN + 7,	// 57
+    ACTION_REDUCE_MIN + 3,	// 58
     ACTION_SHIFT,	// 59
-    ACTION_REDUCE_MIN + 4,	// 60
-    ACTION_REDUCE_MIN + 2,	// 61
-    ACTION_REDUCE_MIN + 14};	// 62
+    ACTION_REDUCE_MIN + 1,	// 60
+    ACTION_SHIFT,	// 61
+    ACTION_SHIFT,	// 62
+    ACTION_SHIFT,	// 63
+    ACTION_SHIFT,	// 64
+    ACTION_SHIFT,	// 65
+    ACTION_REDUCE_MIN + 17,	// 66
+    ACTION_REDUCE_MIN + 8,	// 67
+    ACTION_REDUCE_MIN + 6,	// 68
+    ACTION_REDUCE_MIN + 5,	// 69
+    ACTION_REDUCE_MIN + 11,	// 70
+    ACTION_REDUCE_MIN + 12,	// 71
+    ACTION_REDUCE_MIN + 10,	// 72
+    ACTION_REDUCE_MIN + 16,	// 73
+    -11,	// 74
+    ACTION_REDUCE_MIN + 14,	// 75
+    ACTION_REDUCE_MIN + 4,	// 76
+    ACTION_REDUCE_MIN + 2,	// 77
+    ACTION_REDUCE_MIN + 19,	// 78
+    ACTION_REDUCE_MIN + 9,	// 79
+    ACTION_REDUCE_MIN + 7,	// 80
+    ACTION_REDUCE_MIN + 3,	// 81
+    ACTION_SHIFT,	// 82
+    ACTION_REDUCE_MIN + 1,	// 83
+    ACTION_SHIFT,	// 84
+    ACTION_REDUCE_MIN + 4,	// 85
+    ACTION_REDUCE_MIN + 2};	// 86
 
 constinit const bux::C_KVPair<uint8_t,uint8_t>
 L2S_Table0[] ={
-    {',',	34},
-    {']',	39}},
+    {',',	36},
+    {']',	52}},
 L2S_Table1[] ={
-    {',',	34},
-    {']',	60}},
+    {',',	36},
+    {']',	76}},
 L2S_Table2[] ={
-    {',',	37},
-    {'}',	40}},
+    {',',	36},
+    {']',	85}},
 L2S_Table3[] ={
-    {',',	37},
-    {'}',	61}},
+    {',',	50},
+    {'}',	53}},
 L2S_Table4[] ={
-    {'-',	13},
-    {'[',	14},
-    {']',	30},
-    {'{',	16},
-    {ZIP_TOKEN(TID_LEX_Float),	17},
-    {ZIP_TOKEN(TID_LEX_Num),	18},
-    {ZIP_TOKEN(TID_LEX_String),	19},
-    {ZIP_TOKEN(TID_KEYWORD_false),	20},
-    {ZIP_TOKEN(TID_KEYWORD_null),	21},
-    {ZIP_TOKEN(TID_KEYWORD_true),	22},
-    {ZIP_TOKEN(NID_elements),	31},
-    {ZIP_TOKEN(NID_value),	24}},
+    {',',	50},
+    {'}',	77}},
 L2S_Table5[] ={
-    {'-',	13},
-    {'[',	14},
-    {']',	55},
-    {'{',	16},
-    {ZIP_TOKEN(TID_LEX_Float),	17},
-    {ZIP_TOKEN(TID_LEX_Num),	18},
-    {ZIP_TOKEN(TID_LEX_String),	19},
-    {ZIP_TOKEN(TID_KEYWORD_false),	20},
-    {ZIP_TOKEN(TID_KEYWORD_null),	21},
-    {ZIP_TOKEN(TID_KEYWORD_true),	22},
-    {ZIP_TOKEN(NID_elements),	56},
-    {ZIP_TOKEN(NID_value),	24}},
+    {',',	50},
+    {'}',	86}},
 L2S_Table6[] ={
     {'-',	13},
     {'[',	14},
+    {']',	32},
     {'{',	16},
     {ZIP_TOKEN(TID_LEX_Float),	17},
     {ZIP_TOKEN(TID_LEX_Num),	18},
@@ -266,54 +331,114 @@ L2S_Table6[] ={
     {ZIP_TOKEN(TID_KEYWORD_false),	20},
     {ZIP_TOKEN(TID_KEYWORD_null),	21},
     {ZIP_TOKEN(TID_KEYWORD_true),	22},
-    {ZIP_TOKEN(NID_value),	41}},
+    {ZIP_TOKEN(NID_elements),	33},
+    {ZIP_TOKEN(NID_value),	24}},
 L2S_Table7[] ={
-    {'-',	42},
-    {'[',	43},
-    {'{',	44},
-    {ZIP_TOKEN(TID_LEX_Float),	45},
-    {ZIP_TOKEN(TID_LEX_Num),	46},
-    {ZIP_TOKEN(TID_LEX_String),	47},
-    {ZIP_TOKEN(TID_KEYWORD_false),	48},
-    {ZIP_TOKEN(TID_KEYWORD_null),	49},
-    {ZIP_TOKEN(TID_KEYWORD_true),	50},
-    {ZIP_TOKEN(NID_value),	62}},
+    {'-',	13},
+    {'[',	14},
+    {']',	58},
+    {'{',	16},
+    {ZIP_TOKEN(TID_LEX_Float),	17},
+    {ZIP_TOKEN(TID_LEX_Num),	18},
+    {ZIP_TOKEN(TID_LEX_String),	19},
+    {ZIP_TOKEN(TID_KEYWORD_false),	20},
+    {ZIP_TOKEN(TID_KEYWORD_null),	21},
+    {ZIP_TOKEN(TID_KEYWORD_true),	22},
+    {ZIP_TOKEN(NID_elements),	59},
+    {ZIP_TOKEN(NID_value),	24}},
 L2S_Table8[] ={
-    {'}',	32},
-    {ZIP_TOKEN(TID_LEX_String),	26},
-    {ZIP_TOKEN(NID_members),	33}},
+    {'-',	13},
+    {'[',	14},
+    {']',	81},
+    {'{',	16},
+    {ZIP_TOKEN(TID_LEX_Float),	17},
+    {ZIP_TOKEN(TID_LEX_Num),	18},
+    {ZIP_TOKEN(TID_LEX_String),	19},
+    {ZIP_TOKEN(TID_KEYWORD_false),	20},
+    {ZIP_TOKEN(TID_KEYWORD_null),	21},
+    {ZIP_TOKEN(TID_KEYWORD_true),	22},
+    {ZIP_TOKEN(NID_elements),	82},
+    {ZIP_TOKEN(NID_value),	24}},
 L2S_Table9[] ={
-    {'}',	57},
-    {ZIP_TOKEN(TID_LEX_String),	26},
-    {ZIP_TOKEN(NID_members),	58}};
+    {'-',	13},
+    {'[',	14},
+    {'{',	16},
+    {ZIP_TOKEN(TID_LEX_Error),	54},
+    {ZIP_TOKEN(TID_LEX_Float),	17},
+    {ZIP_TOKEN(TID_LEX_Num),	18},
+    {ZIP_TOKEN(TID_LEX_String),	19},
+    {ZIP_TOKEN(TID_KEYWORD_false),	20},
+    {ZIP_TOKEN(TID_KEYWORD_null),	21},
+    {ZIP_TOKEN(TID_KEYWORD_true),	22},
+    {ZIP_TOKEN(NID_value),	55}},
+L2S_Table10[] ={
+    {'-',	63},
+    {'[',	64},
+    {'{',	65},
+    {ZIP_TOKEN(TID_LEX_Float),	67},
+    {ZIP_TOKEN(TID_LEX_Num),	68},
+    {ZIP_TOKEN(TID_LEX_String),	69},
+    {ZIP_TOKEN(TID_KEYWORD_false),	70},
+    {ZIP_TOKEN(TID_KEYWORD_null),	71},
+    {ZIP_TOKEN(TID_KEYWORD_true),	72},
+    {ZIP_TOKEN(NID_value),	78}},
+L2S_Table11[] ={
+    {'}',	34},
+    {ZIP_TOKEN(TID_LEX_Error),	26},
+    {ZIP_TOKEN(TID_LEX_String),	27},
+    {ZIP_TOKEN(NID_member),	28},
+    {ZIP_TOKEN(NID_members),	35}},
+L2S_Table12[] ={
+    {'}',	60},
+    {ZIP_TOKEN(TID_LEX_Error),	26},
+    {ZIP_TOKEN(TID_LEX_String),	27},
+    {ZIP_TOKEN(NID_member),	28},
+    {ZIP_TOKEN(NID_members),	61}},
+L2S_Table13[] ={
+    {'}',	83},
+    {ZIP_TOKEN(TID_LEX_Error),	26},
+    {ZIP_TOKEN(TID_LEX_String),	27},
+    {ZIP_TOKEN(NID_member),	28},
+    {ZIP_TOKEN(NID_members),	84}},
+L2S_Table14[] ={
+    {ZIP_TOKEN(TID_LEX_Error),	74},
+    {ZIP_TOKEN(TID_LEX_String),	27},
+    {ZIP_TOKEN(NID_member),	75}};
 
 constinit const struct C_MapGoto {
     bux::U_K2V<uint8_t,uint8_t> m_k2v;
     uint8_t	m_curState;
     int8_t	m_nextStateEx;
-}   mapGoto[22] ={
-    {findPrime3_0_10,	0,	1},
+}   mapGoto[29] ={
+    {findPrime4_0_10,	0,	1},
     {findPrime2_4_2,	1,	11},
     {findPrime2_0_12,	2,	13},
-    {findPrime4_0_3,	3,	25},
-    {findPrime2_4_2,	13,	28},
-    {L2S_Table4,	14,	-12},
-    {L2S_Table8,	16,	-3},
-    {findPrime0_0_2,	23,	34},
-    {isKey<':'>,	26,	36},
-    {findPrime1_0_2,	27,	37},
-    {L2S_Table0,	31,	-2},
-    {L2S_Table2,	33,	-2},
-    {L2S_Table6,	34,	-10},
-    {findPrime3_0_10,	36,	42},
-    {isKey<ZIP_TOKEN(TID_LEX_String)>,	37,	52},
-    {findPrime2_4_2,	42,	53},
-    {L2S_Table5,	43,	-12},
-    {L2S_Table9,	44,	-3},
-    {isKey<':'>,	52,	59},
-    {L2S_Table1,	56,	-2},
-    {L2S_Table3,	58,	-2},
-    {L2S_Table7,	59,	-10}};
+    {findPrime6_0_5,	3,	25},
+    {findPrime2_4_2,	13,	30},
+    {L2S_Table6,	14,	-12},
+    {L2S_Table11,	16,	-5},
+    {findPrime0_0_2,	23,	36},
+    {findPrime4_0_10,	26,	38},
+    {findPrime5_0_2,	27,	48},
+    {findPrime1_0_2,	29,	50},
+    {L2S_Table0,	33,	-2},
+    {L2S_Table3,	35,	-2},
+    {L2S_Table9,	36,	-11},
+    {findPrime2_4_2,	38,	56},
+    {L2S_Table7,	39,	-12},
+    {L2S_Table12,	40,	-5},
+    {isKey<':'>,	47,	62},
+    {findPrime3_0_11,	48,	63},
+    {L2S_Table14,	50,	-3},
+    {L2S_Table1,	59,	-2},
+    {L2S_Table4,	61,	-2},
+    {L2S_Table10,	62,	-10},
+    {findPrime2_4_2,	63,	79},
+    {L2S_Table8,	64,	-12},
+    {L2S_Table13,	65,	-5},
+    {findPrime4_0_10,	74,	38},
+    {L2S_Table2,	82,	-2},
+    {L2S_Table5,	84,	-2}};
 
 void _reduce_0(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
 //  <@> ::= <value>
@@ -398,21 +523,58 @@ void _reduce_12(bux::LR1::C_Parser &, const F_GetProduced &, C_RetLval _reT_)
 }
 
 void _reduce_13(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
-//  <members> ::= $String : <value>
+//  <members> ::= <member>
 {
     json::object t;
-    t.try_emplace(bux::unlex<std::string>(_geT_(0)), bux::unlex<json::value>(_geT_(2)));
+    auto &src = bux::unlex<std::pair<std::string,json::value>>(_geT_(0));
+    t.try_emplace(std::move(src.first), std::move(src.second));
     _reT_ = bux::createLex(std::move(t));
 }
 
 void _reduce_14(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
-//  <members> ::= <members> , $String : <value>
+//  <members> ::= <members> , <member>
 {
-    bux::unlex<json::object>(_geT_(0)).try_emplace(bux::unlex<std::string>(_geT_(2)), bux::unlex<json::value>(_geT_(4)));
+    auto &src = bux::unlex<std::pair<std::string,json::value>>(_geT_(2));
+    bux::unlex<json::object>(_geT_(0)).try_emplace(std::move(src.first), std::move(src.second));
     _reT_ = _geT_(0);
 }
 
-void _reduce_15(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
+void _reduce_15(bux::LR1::C_Parser &_paRSeR_, const F_GetProduced &_geT_, C_RetLval _reT_)
+//  <members> ::= <members> , $Error
+//  <elements> ::= <elements> , $Error
+{
+    dynamic_cast<json::C_Parser&>(_paRSeR_).m_context.log(LL_WARNING, _geT_(1), "Superfluous ','");
+    _reT_ = _geT_(0);
+}
+
+void _reduce_16(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
+//  <member> ::= $String : <value>
+{
+    _reT_ = bux::createLex(std::pair{bux::unlex<std::string>(_geT_(0)), bux::unlex<json::value>(_geT_(2))});
+}
+
+void _reduce_17(bux::LR1::C_Parser &_paRSeR_, const F_GetProduced &_geT_, C_RetLval _reT_)
+//  <member> ::= $String : $Error
+{
+    _paRSeR_.onError(_geT_(2), "Expect <value>");
+    _reT_ = bux::createLex(std::pair{bux::unlex<std::string>(_geT_(0)), json::value{}});
+}
+
+void _reduce_18(bux::LR1::C_Parser &_paRSeR_, const F_GetProduced &_geT_, C_RetLval _reT_)
+//  <member> ::= $String $Error
+{
+    _paRSeR_.onError(_geT_(1), "Expect ':'");
+    _reT_ = bux::createLex(std::pair{bux::unlex<std::string>(_geT_(0)), json::value{}});
+}
+
+void _reduce_19(bux::LR1::C_Parser &_paRSeR_, const F_GetProduced &_geT_, C_RetLval _reT_)
+//  <member> ::= $Error <value> : <value>
+{
+    _paRSeR_.onError(_geT_(0), "Only string key allowed");
+    _reT_ = bux::createLex(std::pair{std::string{"NonStrKey__"}, bux::unlex<json::value>(_geT_(3))});
+}
+
+void _reduce_20(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
 //  <elements> ::= <value>
 {
     json::array t;
@@ -420,7 +582,7 @@ void _reduce_15(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT
     _reT_ = bux::createLex(std::move(t));
 }
 
-void _reduce_16(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
+void _reduce_21(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT_)
 //  <elements> ::= <elements> , <value>
 {
     bux::unlex<json::array>(_geT_(0)).emplace_back(bux::unlex<json::value>(_geT_(2)));
@@ -432,7 +594,7 @@ struct C_ProductionInfo
     void            (*m_pAction)(bux::LR1::C_Parser&,const F_GetProduced&,C_RetLval);
     uint8_t         m_ReducedID;
     uint8_t         m_PopLength;
-} constinit const prodInfo[17] ={
+} constinit const prodInfo[23] ={
 {_reduce_0, 	ZIP_TOKEN(bux::ROOT_NID), 1},	// 0: <@> ::= <value>
 {_reduce_1, 	ZIP_TOKEN(NID_value), 2},	// 1: <value> ::= { }
 {_reduce_2, 	ZIP_TOKEN(NID_value), 3},	// 2: <value> ::= { <members> }
@@ -446,10 +608,16 @@ struct C_ProductionInfo
 {_reduce_10,	ZIP_TOKEN(NID_value), 1},	// 10: <value> ::= true
 {_reduce_11,	ZIP_TOKEN(NID_value), 1},	// 11: <value> ::= false
 {_reduce_12,	ZIP_TOKEN(NID_value), 1},	// 12: <value> ::= null
-{_reduce_13,	ZIP_TOKEN(NID_members), 3},	// 13: <members> ::= $String : <value>
-{_reduce_14,	ZIP_TOKEN(NID_members), 5},	// 14: <members> ::= <members> , $String : <value>
-{_reduce_15,	ZIP_TOKEN(NID_elements), 1},	// 15: <elements> ::= <value>
-{_reduce_16,	ZIP_TOKEN(NID_elements), 3} 	// 16: <elements> ::= <elements> , <value>
+{_reduce_13,	ZIP_TOKEN(NID_members), 1},	// 13: <members> ::= <member>
+{_reduce_14,	ZIP_TOKEN(NID_members), 3},	// 14: <members> ::= <members> , <member>
+{_reduce_15,	ZIP_TOKEN(NID_members), 3},	// 15: <members> ::= <members> , $Error
+{_reduce_16,	ZIP_TOKEN(NID_member), 3},	// 16: <member> ::= $String : <value>
+{_reduce_17,	ZIP_TOKEN(NID_member), 3},	// 17: <member> ::= $String : $Error
+{_reduce_18,	ZIP_TOKEN(NID_member), 2},	// 18: <member> ::= $String $Error
+{_reduce_19,	ZIP_TOKEN(NID_member), 4},	// 19: <member> ::= $Error <value> : <value>
+{_reduce_20,	ZIP_TOKEN(NID_elements), 1},	// 20: <elements> ::= <value>
+{_reduce_21,	ZIP_TOKEN(NID_elements), 3},	// 21: <elements> ::= <elements> , <value>
+{_reduce_15,	ZIP_TOKEN(NID_elements), 3} 	// 22: <elements> ::= <elements> , $Error
 };
 
 struct C_ActionTraits
@@ -474,7 +642,7 @@ class C_ParserPolicy: public I_ParserPolicy
 public:
 
     // Ctor
-    C_ParserPolicy(): I_ParserPolicy(TOKENGEN_UB+2) {}
+    C_ParserPolicy(): I_ParserPolicy(TID_LEX_Error) {}
 
     // Implement I_ParserPolicy
     size_t action(bux::T_StateID state, bux::T_LexID token) const override;
@@ -502,7 +670,8 @@ size_t C_ParserPolicy::getAcceptId() const
 
 bool C_ParserPolicy::getTokenName(bux::T_LexID token, std::string &name) const
 {
-    static constinit char const *const NAMES[10] = {
+    static constinit char const *const NAMES[12] = {
+        "$Error",
         "$Float",
         "$Num",
         "$Spaces",
@@ -511,9 +680,10 @@ bool C_ParserPolicy::getTokenName(bux::T_LexID token, std::string &name) const
         "\"null\"",
         "\"true\"",
         "<elements>",
+        "<member>",
         "<members>",
         "<value>"};
-    if (bux::TOKENGEN_LB <= token && token < bux::TOKENGEN_LB + 10)
+    if (bux::TOKENGEN_LB <= token && token < bux::TOKENGEN_LB + 12)
     {
         name = NAMES[token - bux::TOKENGEN_LB];
         return true;
@@ -528,7 +698,7 @@ bux::T_StateID C_ParserPolicy::nextState(bux::T_StateID state, bux::T_LexID inpu
     else if (input >= ENCODED_TOKEN_LB)
         LOGIC_ERROR("Invalid input: state={} input={}", (int)state, printToken(input));
 
-    auto end = mapGoto + 22;
+    auto end = mapGoto + 29;
     auto found = std::lower_bound(mapGoto, end, state, [](const C_MapGoto &i, bux::T_StateID state_) {
         return i.m_curState < state_;
     });
@@ -549,7 +719,7 @@ void C_ParserPolicy::getReduceInfo(size_t id, C_ReduceInfo &info) const
 void C_ParserPolicy::onError(bux::LR1::C_Parser &_paRSeR_, const bux::C_SourcePos &pos, const std::string &message) const
 {
     // User-defined %ON_ERROR begins
-    dynamic_cast<json::C_Parser&>(_paRSeR_).m_context <<'(' <<pos.m_Line <<',' <<pos.m_Col <<"): " <<message <<'\n';
+    dynamic_cast<json::C_Parser&>(_paRSeR_).m_context.log(LL_ERROR, pos, message);
     // User-defined %ON_ERROR ends
 }
 

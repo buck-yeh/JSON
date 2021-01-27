@@ -11,13 +11,14 @@ namespace json {
 // Token Id Constants
 enum
 {
-    TID_LEX_Float       = bux::TOKENGEN_LB+0,	// $Float
-    TID_LEX_Num         = bux::TOKENGEN_LB+1,	// $Num
-    TID_LEX_Spaces      = bux::TOKENGEN_LB+2,	// $Spaces
-    TID_LEX_String      = bux::TOKENGEN_LB+3,	// $String
-    TID_KEYWORD_false   = bux::TOKENGEN_LB+4,	// "false"
-    TID_KEYWORD_null    = bux::TOKENGEN_LB+5,	// "null"
-    TID_KEYWORD_true    = bux::TOKENGEN_LB+6,	// "true"
+    TID_LEX_Error       = bux::TOKENGEN_LB+0,	// $Error
+    TID_LEX_Float       = bux::TOKENGEN_LB+1,	// $Float
+    TID_LEX_Num         = bux::TOKENGEN_LB+2,	// $Num
+    TID_LEX_Spaces      = bux::TOKENGEN_LB+3,	// $Spaces
+    TID_LEX_String      = bux::TOKENGEN_LB+4,	// $String
+    TID_KEYWORD_false   = bux::TOKENGEN_LB+5,	// "false"
+    TID_KEYWORD_null    = bux::TOKENGEN_LB+6,	// "null"
+    TID_KEYWORD_true    = bux::TOKENGEN_LB+7,	// "true"
     TID_UB_
 };
 

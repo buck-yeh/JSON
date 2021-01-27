@@ -19,3 +19,10 @@ add_test(NAME test_floats
 add_test(NAME test_real
          COMMAND test_JSON real1.json
          )
+add_test(NAME test_warn
+         COMMAND test_JSON warn1.json
+         )
+add_test(NAME test_error1
+         COMMAND test_JSON error1.json
+         )
+set_tests_properties(test_error1 PROPERTIES WILL_FAIL true)

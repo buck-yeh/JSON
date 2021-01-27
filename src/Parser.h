@@ -13,7 +13,7 @@ class C_Parser: public bux::LR1::C_Parser
 public:
 
     // Data
-    std::ostream &          m_context;
+    bux::C_ParserOStreamCount m_context;
 
     // Ctor
     template<class...T_Args>

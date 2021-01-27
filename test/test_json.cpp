@@ -21,18 +21,18 @@ int parseUnparse(std::istream &in, std::string &outStr, size_t indent)
     {
         // Output the result
         std::ostringstream out;
-        dump(json::parse(in), out, indent);
+        dump(json::parse(in,&std::cerr), out, indent);
         outStr = out.str();
         return MAIN_SUCCESS;
     }
     catch (const std::exception &t)
     {
-        std::cerr <<HRTN(t) <<": " <<t.what() <<" ... \r\n";
+        std::cerr <<HRTN(t) <<": " <<t.what() <<'\n';
         return MAIN_CAUGHT;
     }
     catch (...)
     {
-        std::cerr <<"Unknown exception\r\n";
+        std::cerr <<"Unknown exception\n";
         return MAIN_CAUGHT;
     }
 }

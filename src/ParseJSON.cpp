@@ -12,17 +12,20 @@ namespace json {
 //
 //      Functions
 //
-value parse(std::istream &in)
+value parse(std::istream &in, std::ostream *log)
 {
-    std::ostringstream  err_out;
-    C_Parser            parser{err_out};
+    std::ostringstream  nul_out;
+    if (!log)
+        log = &nul_out;
+
+    C_Parser            parser{*log};
     bux::C_Screener     preparser(parser, [](auto token){ return token == TID_LEX_Spaces || token == '\n'; });
     C_JSONScanner       scanner(preparser);
-    bux::scanFile(">", in, scanner);
+    bux::scanFile({}, in, scanner);
 
     // Check if parsing is ok
-    if (const auto err_msgs = err_out.str(); !err_msgs.empty())
-        RUNTIME_ERROR("{}\nFail to parse!", err_msgs);
+    if (const auto n_errs = parser.m_context.getCount(LL_FATAL) + parser.m_context.getCount(LL_ERROR))
+        RUNTIME_ERROR("Total {} errors", n_errs);
 
     // Acceptance
     if (!parser.accepted())
@@ -31,20 +34,20 @@ value parse(std::istream &in)
     return bux::unlex<value>(parser.getFinalLex());;
 }
 
-std::optional<jint> parse_int(std::string_view s)
+std::optional<jint> parse_int(std::string_view s, std::ostream *log)
 {
     bux::C_IMemStream in{s};
-    const auto v = json::parse(in);
+    const auto v = json::parse(in, log);
     if (auto i = get_if<json::jint>(&v))
         return *i;
 
     return {};
 }
 
-std::optional<jfloat> parse_float(std::string_view s)
+std::optional<jfloat> parse_float(std::string_view s, std::ostream *log)
 {
     bux::C_IMemStream in{s};
-    const auto v = json::parse(in);
+    const auto v = json::parse(in, log);
     if (auto f = get_if<json::jfloat>(&v))
         return *f;
     if (auto i = get_if<json::jint>(&v))
