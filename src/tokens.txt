@@ -9,17 +9,15 @@ _the_very_last_ = _literal_f_a_l_s_e_|_literal_n_u_l_l_|_literal_t_r_u_e_ | spac
 
 %HEADERS_FOR_CPP     [[
 #include "ParserIdDef.h"
-
-// %HEADERS_FOR_SCANNER_CPP expanded BEGIN
+// Grammar %HEADERS_FOR_SCANNER_CPP begins
 #include "JsonObjs.h"   // json::jint, json::jfloat
 #include <charconv>     // std::from_chars()
-// %HEADERS_FOR_SCANNER_CPP expanded END
+// Grammar %HEADERS_FOR_SCANNER_CPP ends
 using namespace json;
 ]]
 
 %LOCAL_ACTION_DEFS   [[
-
-// %LOCALS_FOR_SCANNER_CPP expanded BEGIN
+// Grammar %LOCALS_FOR_SCANNER_CPP begins
 template<class T_LexCh>
 auto createFloatOrInt(const T_LexCh *c, size_t n)
 {
@@ -50,5 +48,5 @@ auto createFloatOrInt(const T_LexCh *c, size_t n)
         RUNTIME_ERROR("Not a float: {}", s);
 #endif
 }
-// %LOCALS_FOR_SCANNER_CPP expanded END
+// Grammar %LOCALS_FOR_SCANNER_CPP ends
 ]]
