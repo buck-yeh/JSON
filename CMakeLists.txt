@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 3.18)
 cmake_policy(VERSION 3.18)
 
-#set(CMAKE_CXX_COMPILER "clang++")
+#set(CMAKE_CXX_COMPILER_ID "Clang")
 
 include(FetchContent)
 
