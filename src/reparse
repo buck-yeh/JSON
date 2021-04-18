@@ -8,5 +8,5 @@ fi
 if [[ -z "$SCANNERGEN_DIR" ]]; then
     SCANNERGEN_DIR=$TOOL_ROOT/ScannerGen
 fi
-$PARSERGEN_DIR/parsergen grammar.txt Parser tokens.txt && \
-$SCANNERGEN_DIR/scannergen Scanner "$SCANNERGEN_DIR/RE_Suite.txt" tokens.txt
+$PARSERGEN_DIR/parsergen grammar.txt Parser tokens.txt -a && \
+$SCANNERGEN_DIR/scannergen Scanner "$SCANNERGEN_DIR/RE_Suite.txt" tokens.txt -a

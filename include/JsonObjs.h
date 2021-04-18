@@ -1,5 +1,4 @@
-#ifndef JsonObjs_H_
-#define JsonObjs_H_
+#pragma once
 
 #include <deque>    // std::deque<>
 #include <map>      // std::map<>
@@ -32,5 +31,3 @@ void dump(const array &src, std::ostream &out, size_t indent = 0);
 void dump(const object &src, std::ostream &out, size_t indent = 0);
 
 } // namespace json
-
-#endif // JsonObjs_H_
