@@ -516,7 +516,7 @@ void _reduce_13(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT
 {
     json::object t;
     auto &src = bux::unlex<std::pair<std::string,json::value>>(_geT_(0));
-    t.try_emplace(std::move(src.first), std::move(src.second));
+    t.emplace_back(std::move(src));
     _reT_ = bux::createLex(std::move(t));
 }
 
@@ -524,7 +524,7 @@ void _reduce_14(bux::LR1::C_Parser &, const F_GetProduced &_geT_, C_RetLval _reT
 //  <members> ::= <members> , <member>
 {
     auto &src = bux::unlex<std::pair<std::string,json::value>>(_geT_(2));
-    bux::unlex<json::object>(_geT_(0)).try_emplace(std::move(src.first), std::move(src.second));
+    bux::unlex<json::object>(_geT_(0)).emplace_back(std::move(src));
     _reT_ = _geT_(0);
 }
 

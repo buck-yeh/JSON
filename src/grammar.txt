@@ -115,12 +115,12 @@ auto createFloatOrInt(const T_LexCh *c, size_t n)
 <members> ::= <member>              [[
     json::object t;
     auto &src = bux::unlex<std::pair<std::string,json::value>>($1);
-    t.try_emplace(std::move(src.first), std::move(src.second));
+    t.emplace_back(std::move(src));
     $r = bux::createLex(std::move(t));
 ]]
 <members> ::= <members> , <member>  [[
     auto &src = bux::unlex<std::pair<std::string,json::value>>($3);
-    bux::unlex<json::object>($1).try_emplace(std::move(src.first), std::move(src.second));
+    bux::unlex<json::object>($1).emplace_back(std::move(src));
     $r = $1;
 ]]
 <members> ::= <members> ,           [[

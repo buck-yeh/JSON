@@ -105,7 +105,11 @@ std::ostream &operator<<(std::ostream &out, const value &src)
 
 const value &operator/(const value &root, const std::string &key)
 {
-    return get<object>(root).at(key);
+    for (auto &i: get<object>(root))
+        if (i.first == key)
+            return i.second;
+
+    RUNTIME_ERROR("Key '{}' not found", key);
 }
 
 const value *operator/(const value *root, const std::string &key) noexcept
@@ -116,10 +120,9 @@ const value *subvalue(const value &root, const std::string &key) noexcept
 {
     if (holds_alternative<object>(root))
     {
-        auto &obj = get<object>(root);
-        const auto i = obj.find(key);
-        if (i != obj.end())
-            return &i->second;
+        for (auto &i: get<object>(root))
+            if (i.first == key)
+                return &i.second;
     }
     return nullptr;
 }
