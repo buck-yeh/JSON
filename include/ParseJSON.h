@@ -10,7 +10,7 @@ namespace json {
 value parse(std::istream &in, std::ostream *log = nullptr);
 
 // Good side effects of parse()
-std::optional<jint> parse_int(std::string_view s, std::ostream *log = nullptr);     // Decimal only of course
+std::optional<jint> parse_int(std::string_view s, std::ostream *log = nullptr);     // Decimal only
 std::optional<jfloat> parse_float(std::string_view s, std::ostream *log = nullptr);
 
 } // namespace json

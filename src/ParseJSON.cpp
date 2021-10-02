@@ -37,23 +37,25 @@ value parse(std::istream &in, std::ostream *log)
 std::optional<jint> parse_int(std::string_view s, std::ostream *log)
 {
     bux::C_IMemStream in{s};
-    const auto v = json::parse(in, log);
-    if (auto i = get_if<json::jint>(&v))
+    const auto v = parse(in, log);
+    if (auto i = get_if<ALT_INT>(&v))
         return *i;
 
-    return {};
+    return std::nullopt;
 }
 
 std::optional<jfloat> parse_float(std::string_view s, std::ostream *log)
 {
     bux::C_IMemStream in{s};
-    const auto v = json::parse(in, log);
-    if (auto f = get_if<json::jfloat>(&v))
-        return *f;
-    if (auto i = get_if<json::jint>(&v))
-        return *i;
-
-    return {};
+    const auto v = parse(in, log);
+    switch (v.index())
+    {
+    case ALT_FLOAT:
+        return get<ALT_FLOAT>(v);
+    case ALT_INT:
+        return get<ALT_INT>(v);
+    }
+    return std::nullopt;
 }
 
 } // namespace json
