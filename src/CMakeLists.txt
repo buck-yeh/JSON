@@ -1,6 +1,6 @@
 #set(CMAKE_CXX_COMPILER_ID "Clang")
 IF(CMAKE_CXX_COMPILER_ID MATCHES Clang|GNU)
-    string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -Wshadow -Wconversion -std=c++2a")
+    string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -Wshadow -Wconversion -std=c++20")
     IF(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         message("Clang")
         string(APPEND CMAKE_CXX_FLAGS " -Wno-potentially-evaluated-expression -Wno-deprecated-anon-enum-enum-conversion")
@@ -15,4 +15,4 @@ ELSE()
 ENDIF()
 
 add_library(json STATIC ParseJSON.cpp JsonObjs.cpp Parser.cpp Scanner.cpp)
-target_include_directories(json PRIVATE ../include ../../bux/include)
+target_include_directories(json PRIVATE ../include ../${DEPENDEE_ROOT}/bux/include)
