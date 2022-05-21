@@ -21,5 +21,10 @@ endif()
 
 project(JSON)
 
+IF(DEFINED FETCH_DEPENDEES)
+    string(APPEND CMAKE_CXX_FLAGS " -I${fetchedbux_SOURCE_DIR}/include")
+ENDIF()
+message("Root/CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
+
 add_subdirectory (src)
 add_subdirectory (test)
