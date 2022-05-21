@@ -16,7 +16,7 @@ ENDIF()
 
 add_library(json STATIC ParseJSON.cpp JsonObjs.cpp Parser.cpp Scanner.cpp)
 if(DEFINED FETCH_DEPENDEES)
-    target_include_directories(json PRIVATE ../include ${fetchedbux_SOURCE_DIR}/include)
+    target_include_directories(json PRIVATE ../include)
 else()
     target_include_directories(json PRIVATE ../include ../${DEPENDEE_ROOT}/bux/include)
 endif()

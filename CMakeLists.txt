@@ -21,5 +21,14 @@ endif()
 
 project(JSON)
 
+IF(DEFINED FETCH_DEPENDEES)
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        string(APPEND CMAKE_CXX_FLAGS " /I ${fetchedbux_SOURCE_DIR}/include")
+    else()
+        string(APPEND CMAKE_CXX_FLAGS " -I${fetchedbux_SOURCE_DIR}/include")
+    endif()
+ENDIF()
+message("Root/CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
+
 add_subdirectory (src)
 add_subdirectory (test)
