@@ -4,7 +4,7 @@ string(APPEND CMAKE_CXX_FLAGS " -Wall -Wextra -Wshadow -Wconversion -std=c++2a")
 
 add_executable(test_JSON test_json.cpp)
 if(DEFINED FETCH_DEPENDEES)
-    target_include_directories(test_JSON PRIVATE ../include)
+    target_include_directories(test_JSON PRIVATE ../include ${fetchedbux_SOURCE_DIR}/include)
 else()
     target_include_directories(test_JSON PRIVATE ../include ../${DEPENDEE_ROOT}/bux/include)
 endif()
