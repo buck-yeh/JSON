@@ -1,6 +1,6 @@
 #include "ParseJSON.h"      // json::parse()
 //----------------------------------------------------
-#include "bux/LogStream.h"  // HRTN()
+#include "bux/StrUtil.h"    // HRTN()
 #include <iostream>         // std::cin, std::cerr
 #include <fstream>          // std::ifstream
 #include <filesystem>       // std::filesystem::*
