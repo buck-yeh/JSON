@@ -9,7 +9,7 @@ else()
     target_include_directories(test_JSON PRIVATE ../include ../${DEPENDEE_ROOT}/bux/include)
 endif()
 target_link_directories(test_JSON PRIVATE ../${DEPENDEE_ROOT}/bux/src)
-target_link_libraries(test_JSON json bux fmt stdc++)
+target_link_libraries(test_JSON json bux stdc++)
 
 enable_testing()
 add_test(NAME test_leaves
