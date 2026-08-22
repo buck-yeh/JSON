@@ -1,6 +1,7 @@
 #include "JsonObjs.h"
 //--------------------------------------------------------------------
 #include "bux/LexBase.h"    // bux::asciiLiteral()
+#include "bux/XException.h" // RUNTIME_ERROR()
 #include <ostream>          // std::ostream
 
 namespace {
